@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ayush Patel — Cloud / DevOps Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg: #0a0a0a;
+    --bg-elev: #111111;
+    --bg-card: #141414;
+    --ink: #ededed;
+    --ink-dim: #888888;
+    --ink-mute: #555555;
+    --line: #1f1f1f;
+    --line-bright: #2a2a2a;
+    --accent: #ff5722;        /* signal-orange — alarm/log warning */
+    --accent-soft: #ff8a65;
+    --green: #4ade80;         /* status:ok */
+    --amber: #fbbf24;         /* status:warn */
+    --red:   #ef4444;         /* status:crit */
+    --blue:  #60a5fa;
+    --serif: 'Fraunces', 'Times New Roman', serif;
+    --mono:  'JetBrains Mono', ui-monospace, 'Courier New', monospace;
+  }
+
+  *{ box-sizing: border-box; margin: 0; padding: 0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(1px 1px at 25% 30%, rgba(255,255,255,.03) 50%, transparent 50%),
+      radial-gradient(1px 1px at 75% 70%, rgba(255,255,255,.025) 50%, transparent 50%);
+    background-size: 32px 32px, 24px 24px;
+  }
+
+  /* film grain */
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.4 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: .35;
+    z-index: 1;
+    mix-blend-mode: overlay;
+  }
+
+  ::selection{ background: var(--accent); color: #000; }
+
+  a{ color: inherit; text-decoration: none; }
+
+  /* ───────── top status bar ───────── */
+  .statusbar{
+    position: fixed; top:0; left:0; right:0;
+    height: 28px;
+    background: #050505;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center;
+    padding: 0 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .04em;
+    color: var(--ink-dim);
+    z-index: 50;
+    gap: 22px;
+  }
+  .statusbar .dot{
+    display:inline-block; width:6px; height:6px; border-radius:50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    margin-right: 6px;
+    animation: blink 2s infinite;
+  }
+  @keyframes blink{ 0%,90%{opacity:1} 95%{opacity:.3} 100%{opacity:1} }
+  .statusbar .item{ display:flex; align-items:center; }
+  .statusbar .spacer{ flex:1; }
+  .statusbar .item.warn .dot{ background: var(--amber); box-shadow: 0 0 8px var(--amber);}
+  @media (max-width: 720px){
+    .statusbar .hide-sm{ display: none; }
+    .statusbar{ gap: 14px; padding: 0 12px; font-size: 10px;}
+  }
+
+  /* ───────── nav ───────── */
+  nav.topnav{
+    position: fixed; top: 28px; left: 0; right: 0;
+    height: 56px;
+    background: rgba(10,10,10,.78);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px;
+    z-index: 40;
+  }
+  .brand{
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: -.02em;
+    font-style: italic;
+  }
+  .brand span{ color: var(--accent); }
+  .nav-links{
+    display:flex; gap: 28px;
+    font-family: var(--mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .15em;
+  }
+  .nav-links a{
+    color: var(--ink-dim);
+    transition: color .2s;
+    position: relative;
+  }
+  .nav-links a:hover{ color: var(--ink); }
+  .nav-links a::before{
+    content: counter(navc, decimal-leading-zero) " / ";
+    counter-increment: navc;
+    color: var(--ink-mute);
+    font-size: 10px;
+  }
+  .nav-links{ counter-reset: navc; }
+  @media (max-width: 720px){
+    .nav-links{ display: none; }
+    nav.topnav{ padding: 0 18px; }
+  }
+
+  main{ padding-top: 84px; position: relative; z-index: 2;}
+
+  /* ───────── HERO ───────── */
+  .hero{
+    min-height: calc(100vh - 84px);
+    padding: 60px 32px 80px;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .hero::before{
+    content:"";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 80px 80px;
+    opacity: .35;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 80%);
+  }
+  .hero-left{ position: relative; z-index: 2;}
+  .hero-meta{
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .hero-meta .bar{ width: 32px; height: 1px; background: var(--accent);}
+  h1.hero-title{
+    font-family: var(--serif);
+    font-size: clamp(48px, 8vw, 110px);
+    font-weight: 300;
+    line-height: .92;
+    letter-spacing: -.04em;
+    margin-bottom: 28px;
+  }
+  h1.hero-title .em{
+    font-style: italic;
+    font-weight: 900;
+    color: var(--accent);
+  }
+  h1.hero-title .small{
+    display: block;
+    font-size: .42em;
+    font-weight: 400;
+    color: var(--ink-dim);
+    letter-spacing: -.02em;
+    margin-top: 14px;
+    font-style: normal;
+  }
+  .hero-desc{
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink-dim);
+    max-width: 480px;
+    margin-bottom: 36px;
+  }
+  .hero-desc em{ color: var(--ink); font-style: italic;}
+
+  .hero-cta{ display: flex; gap: 14px; flex-wrap: wrap;}
+  .btn{
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 22px;
+    font-family: var(--mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .15em;
+    border: 1px solid var(--line-bright);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all .25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn:hover{ border-color: var(--accent); color: var(--accent); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--accent);}
+  .btn.primary{ background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700;}
+  .btn.primary:hover{ background: transparent; color: var(--accent); box-shadow: 4px 4px 0 var(--ink);}
+  .btn .arr{ font-family: var(--serif); font-style: italic; font-size: 16px; }
+
+  /* hero right - terminal */
+  .hero-right{ position: relative; z-index: 2;}
+  .terminal{
+    background: #0d0d0d;
+    border: 1px solid var(--line-bright);
+    border-radius: 6px;
+    overflow: hidden;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    box-shadow: 0 30px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(255,87,34,.05);
+  }
+  .term-head{
+    background: #1a1a1a;
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .term-head .tdot{ width: 11px; height: 11px; border-radius: 50%; background: #333; }
+  .term-head .tdot.r{ background: #ff5f57;}
+  .term-head .tdot.y{ background: #ffbd2e;}
+  .term-head .tdot.g{ background: #28ca42;}
+  .term-head .tname{
+    margin-left: auto;
+    color: var(--ink-mute);
+    font-size: 11px;
+    letter-spacing: .05em;
+  }
+  .term-body{
+    padding: 22px;
+    line-height: 1.85;
+    min-height: 320px;
+  }
+  .prompt{ color: var(--accent); }
+  .cmd{ color: var(--ink); }
+  .out{ color: var(--ink-dim); }
+  .ok{ color: var(--green); }
+  .warn{ color: var(--amber);}
+  .info{ color: var(--blue);}
+  .key{ color: var(--accent-soft);}
+  .term-line{
+    opacity: 0;
+    animation: typeIn .35s forwards;
+  }
+  @keyframes typeIn{
+    from{ opacity: 0; transform: translateY(4px);}
+    to{ opacity: 1; transform: none;}
+  }
+  .cursor{
+    display: inline-block; width: 8px; height: 14px;
+    background: var(--accent);
+    vertical-align: middle;
+    animation: cur 1s infinite step-end;
+  }
+  @keyframes cur{ 50%{ opacity: 0;}}
+
+  @media (max-width: 980px){
+    .hero{ grid-template-columns: 1fr; padding: 40px 20px 60px;}
+    h1.hero-title{ font-size: clamp(42px, 12vw, 78px); }
+  }
+
+  /* ───────── section base ───────── */
+  section.block{
+    padding: 100px 32px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  .section-head{
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    margin-bottom: 56px;
+    border-bottom: 1px dashed var(--line-bright);
+    padding-bottom: 18px;
+  }
+  .section-num{
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: .2em;
+  }
+  .section-title{
+    font-family: var(--serif);
+    font-size: clamp(34px, 5vw, 56px);
+    font-weight: 400;
+    letter-spacing: -.025em;
+    line-height: 1;
+  }
+  .section-title em{ font-style: italic; font-weight: 700; color: var(--accent);}
+  .section-meta{
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: .1em;
+  }
+  @media (max-width: 720px){
+    section.block{ padding: 70px 20px;}
+    .section-head{ flex-wrap: wrap; gap: 12px;}
+    .section-meta{ display: none;}
+  }
+
+  /* ───────── ABOUT ───────── */
+  .about-grid{
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+  .about-prose p{
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.55;
+    color: var(--ink);
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+  .about-prose p .hl{
+    background: linear-gradient(180deg, transparent 65%, rgba(255,87,34,.35) 65%);
+    padding: 0 4px;
+    font-style: italic;
+    font-weight: 500;
+  }
+  .about-prose .signature{
+    margin-top: 30px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-dim);
+  }
+  .about-prose .signature::before{ content: "— "; }
+
+  .stats-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid var(--line-bright);
+  }
+  .stat{
+    padding: 26px 22px;
+    border-right: 1px solid var(--line-bright);
+    border-bottom: 1px solid var(--line-bright);
+  }
+  .stat:nth-child(2n){ border-right: none;}
+  .stat:nth-last-child(-n+2){ border-bottom: none;}
+  .stat .num{
+    font-family: var(--serif);
+    font-size: 56px;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -.04em;
+  }
+  .stat .num em{ color: var(--accent); font-style: italic; font-weight: 700; }
+  .stat .lbl{
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: .2em;
+  }
+  @media (max-width: 880px){
+    .about-grid{ grid-template-columns: 1fr; gap: 40px;}
+    .about-prose p{ font-size: 18px;}
+    .stat .num{ font-size: 42px;}
+  }
+
+  /* ───────── STACK ───────── */
+  .stack-grid{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 1px solid var(--line-bright);
+  }
+  .tool{
+    border-right: 1px solid var(--line-bright);
+    border-bottom: 1px solid var(--line-bright);
+    padding: 28px 22px;
+    background: var(--bg-elev);
+    position: relative;
+    transition: all .3s;
+    cursor: default;
+    overflow: hidden;
+  }
+  .tool:nth-child(4n){ border-right: none;}
+  .tool:nth-last-child(-n+4){ border-bottom: none;}
+  .tool:hover{
+    background: #1a1a1a;
+    transform: translateY(-3px);
+  }
+  .tool:hover .tool-glyph{ color: var(--accent);}
+  .tool-head{
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 30px;
+  }
+  .tool-glyph{
+    width: 38px;
+    height: 38px;
+    color: var(--ink-dim);
+    transition: color .25s, transform .25s;
+  }
+  .tool-glyph svg{
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+  .tool:hover .tool-glyph{
+    transform: scale(1.08) rotate(-3deg);
+  }
+  .tool-tag{
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-mute);
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    border: 1px solid var(--line-bright);
+    padding: 3px 6px;
+  }
+  .tool-name{
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -.015em;
+    margin-bottom: 6px;
+  }
+  .tool-desc{
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-dim);
+    line-height: 1.55;
+  }
+  .tool-bar{
+    margin-top: 18px;
+    height: 2px;
+    background: var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .tool-bar::after{
+    content:"";
+    position: absolute; left:0; top: 0; bottom: 0;
+    background: var(--accent);
+    width: var(--lvl, 70%);
+    transition: width .6s;
+  }
+  @media (max-width: 1080px){
+    .stack-grid{ grid-template-columns: repeat(3, 1fr);}
+    .tool{ border-right: 1px solid var(--line-bright);}
+    .tool:nth-child(4n){ border-right: 1px solid var(--line-bright);}
+    .tool:nth-child(3n){ border-right: none;}
+  }
+  @media (max-width: 760px){
+    .stack-grid{ grid-template-columns: repeat(2, 1fr);}
+    .tool, .tool:nth-child(3n), .tool:nth-child(4n){ border-right: 1px solid var(--line-bright);}
+    .tool:nth-child(2n){ border-right: none;}
+  }
+
+  /* ───────── PROJECTS ───────── */
+  .projects{ display: flex; flex-direction: column; }
+  .project{
+    display: grid;
+    grid-template-columns: 100px 1fr 1fr;
+    gap: 40px;
+    padding: 40px 0;
+    border-top: 1px solid var(--line-bright);
+    align-items: start;
+    cursor: pointer;
+    transition: padding .25s;
+  }
+  .project:hover{ padding-left: 20px;}
+  .project:last-child{ border-bottom: 1px solid var(--line-bright);}
+  .project .pidx{
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: .15em;
+    padding-top: 8px;
+  }
+  .project .ptitle{
+    font-family: var(--serif);
+    font-size: 38px;
+    font-weight: 400;
+    letter-spacing: -.025em;
+    line-height: 1.05;
+  }
+  .project:hover .ptitle{ font-style: italic; color: var(--accent);}
+  .project .ptitle .yr{
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: .2em;
+    margin-top: 12px;
+    font-style: normal;
+  }
+  .project .pbody{
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--ink-dim);
+    line-height: 1.55;
+  }
+  .project .pbody .stack{
+    margin-top: 18px;
+    display: flex; flex-wrap: wrap; gap: 6px;
+    font-family: var(--mono);
+  }
+  .project .pbody .stack span{
+    font-size: 10px;
+    color: var(--ink);
+    border: 1px solid var(--line-bright);
+    padding: 4px 8px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .project .pbody .metrics{
+    margin-top: 22px;
+    display: flex; gap: 28px;
+    font-family: var(--mono);
+  }
+  .project .pbody .metrics > div{
+    border-left: 2px solid var(--accent);
+    padding-left: 10px;
+  }
+  .project .pbody .metrics b{
+    display: block;
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .project .pbody .metrics small{
+    font-size: 9px;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: .15em;
+  }
+  @media (max-width: 880px){
+    .project{ grid-template-columns: 1fr; gap: 16px;}
+    .project .ptitle{ font-size: 30px;}
+  }
+
+  /* ───────── PIPELINE / EXPERIENCE ───────── */
+  .pipeline{
+    background: var(--bg-elev);
+    border: 1px solid var(--line-bright);
+    padding: 32px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 2;
+    overflow-x: auto;
+  }
+  .pipeline pre{
+    font-family: var(--mono);
+    color: var(--ink-dim);
+    white-space: pre;
+    font-size: 12px;
+  }
+  .pipeline .stage{ color: var(--accent); font-weight: 700;}
+  .pipeline .step{ color: var(--ink);}
+  .pipeline .ok{ color: var(--green);}
+  .pipeline .warn{ color: var(--amber);}
+
+  .timeline{ display: flex; flex-direction: column; gap: 0;}
+  .tl-item{
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 32px;
+    padding: 30px 0;
+    border-top: 1px dashed var(--line-bright);
+  }
+  .tl-item:first-child{ border-top: none; padding-top: 8px;}
+  .tl-date{
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: .15em;
+    padding-top: 10px;
+  }
+  .tl-date .status{
+    display: block;
+    color: var(--ink-mute);
+    margin-top: 6px;
+    font-size: 10px;
+  }
+  .tl-role{
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -.02em;
+    margin-bottom: 4px;
+  }
+  .tl-role em{ color: var(--ink-dim); font-style: italic; font-weight: 400;}
+  .tl-desc{
+    font-family: var(--serif);
+    color: var(--ink-dim);
+    font-size: 16px;
+    line-height: 1.55;
+    margin-top: 10px;
+  }
+  .tl-desc ul{ list-style: none; padding: 0;}
+  .tl-desc li{
+    padding-left: 22px;
+    position: relative;
+    margin-bottom: 6px;
+  }
+  .tl-desc li::before{
+    content: "▸";
+    position: absolute; left: 0;
+    color: var(--accent);
+    font-family: var(--mono);
+  }
+  @media (max-width: 720px){
+    .tl-item{ grid-template-columns: 1fr; gap: 8px;}
+  }
+
+  /* ───────── CONTACT ───────── */
+  .contact{
+    text-align: left;
+    padding: 140px 32px 100px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .contact::before{
+    content: "DEPLOY";
+    position: absolute;
+    bottom: -90px;
+    right: -20px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 360px;
+    font-weight: 900;
+    color: var(--bg-elev);
+    line-height: .8;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .contact-inner{ position: relative; z-index: 2;}
+  .contact .ping{
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: .2em;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+  .contact h2{
+    font-family: var(--serif);
+    font-size: clamp(48px, 8vw, 110px);
+    font-weight: 300;
+    line-height: .95;
+    letter-spacing: -.04em;
+    max-width: 1100px;
+  }
+  .contact h2 em{ color: var(--accent); font-style: italic; font-weight: 900;}
+  .contact-actions{
+    margin-top: 50px;
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
+  .contact-grid{
+    margin-top: 80px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--line-bright);
+  }
+  .cg-item{
+    padding: 24px 0;
+    padding-right: 20px;
+    border-right: 1px solid var(--line-bright);
+  }
+  .cg-item:last-child{ border-right: none; padding-right: 0;}
+  .cg-item .lbl{
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-mute);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .cg-item a, .cg-item .val{
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--ink);
+    transition: color .2s;
+    word-break: break-word;
+  }
+  .cg-item a:hover{ color: var(--accent);}
+  @media (max-width: 880px){
+    .contact-grid{ grid-template-columns: 1fr 1fr;}
+    .cg-item:nth-child(2n){ border-right: none;}
+    .cg-item:nth-child(2n) { padding-right: 0;}
+    .cg-item{ border-bottom: 1px solid var(--line-bright); padding-bottom: 18px; padding-top: 18px;}
+  }
+
+  footer{
+    padding: 28px 32px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--ink-mute);
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+  }
+  footer .ascii{ color: var(--ink-mute); }
+
+  /* ── contact form ── */
+  .contact-lede{
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--ink-dim);
+    max-width: 560px;
+    margin-top: 30px;
+    line-height: 1.55;
+  }
+  .contact-lede em{ color: var(--ink); font-style: italic;}
+
+  .contact-form-wrap{
+    margin-top: 70px;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 0;
+    border: 1px solid var(--line-bright);
+    background: rgba(20,20,20,.5);
+    backdrop-filter: blur(6px);
+  }
+  .contact-form{
+    padding: 36px;
+    border-right: 1px solid var(--line-bright);
+    display: flex; flex-direction: column; gap: 22px;
+  }
+  .form-head{
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--line-bright);
+    margin-bottom: 4px;
+  }
+  .form-num{
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: .15em;
+  }
+  .form-status{
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: .2em;
+    border: 1px solid var(--green);
+    padding: 3px 8px;
+    transition: all .25s;
+  }
+  .form-status.sending{ color: var(--amber); border-color: var(--amber);}
+  .form-status.sent{ color: var(--accent); border-color: var(--accent);}
+  .form-status.error{ color: var(--red); border-color: var(--red);}
+
+  .form-row.two{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .field{ display: flex; flex-direction: column; gap: 8px;}
+  .field .lbl{
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+  }
+  .field input, .field textarea{
+    background: #0a0a0a;
+    border: 1px solid var(--line-bright);
+    color: var(--ink);
+    padding: 13px 14px;
+    font-family: var(--mono);
+    font-size: 13px;
+    width: 100%;
+    transition: border-color .2s, box-shadow .2s;
+    resize: vertical;
+  }
+  .field input::placeholder, .field textarea::placeholder{
+    color: var(--ink-mute);
+  }
+  .field input:focus, .field textarea:focus{
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255,87,34,.12);
+  }
+  .field input:invalid:not(:placeholder-shown){ border-color: var(--red);}
+
+  .form-foot{
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .form-foot .btn{ cursor: pointer;}
+  .form-hint{
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--ink-mute);
+    letter-spacing: .05em;
+  }
+
+  /* sidebar */
+  .contact-side{
+    padding: 36px;
+    display: flex; flex-direction: column; gap: 26px;
+    background: var(--bg-card);
+  }
+  .cs-block{
+    padding-bottom: 18px;
+    border-bottom: 1px dashed var(--line-bright);
+  }
+  .cs-block:last-child{ border-bottom: none; padding-bottom: 0;}
+  .cs-lbl{
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-mute);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .cs-block a{
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--ink);
+    transition: color .2s;
+    word-break: break-word;
+  }
+  .cs-block a:hover{ color: var(--accent);}
+  .cs-static{
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--ink);
+  }
+  .cs-static small{ color: var(--ink-mute); font-size: 12px; font-family: var(--mono); letter-spacing: .05em;}
+  .cs-row{
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .copy-btn{
+    background: transparent;
+    border: 1px solid var(--line-bright);
+    color: var(--ink-dim);
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .15em;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .copy-btn:hover{ border-color: var(--accent); color: var(--accent);}
+  .copy-btn.copied{ background: var(--green); color: #000; border-color: var(--green);}
+
+  @media (max-width: 880px){
+    .contact-form-wrap{ grid-template-columns: 1fr;}
+    .contact-form{ border-right: none; border-bottom: 1px solid var(--line-bright); padding: 26px;}
+    .contact-side{ padding: 26px;}
+    .form-row.two{ grid-template-columns: 1fr;}
+  }
+
+  /* floating contact CTA */
+  .float-cta{
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--accent);
+    color: #000;
+    padding: 14px 22px;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    font-weight: 700;
+    display: inline-flex; align-items: center; gap: 10px;
+    border-radius: 0;
+    z-index: 30;
+    box-shadow: 4px 4px 0 var(--ink), 0 12px 30px rgba(255,87,34,.3);
+    transition: transform .25s, box-shadow .25s;
+    transform: translateY(120px);
+  }
+  .float-cta.show{ transform: translateY(0);}
+  .float-cta:hover{
+    transform: translate(-3px,-3px);
+    box-shadow: 7px 7px 0 var(--ink), 0 14px 36px rgba(255,87,34,.4);
+  }
+  .float-cta .fc-dot{
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #000;
+    animation: blink 2s infinite;
+  }
+  @media (max-width: 520px){
+    .float-cta .fc-text{ display: none;}
+    .float-cta{ padding: 14px; bottom: 16px; right: 16px;}
+    .float-cta .fc-dot{ width: 10px; height: 10px;}
+  }
+
+  /* reveal on scroll */
+  .reveal{
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .8s ease, transform .8s ease;
+  }
+  .reveal.on{ opacity: 1; transform: none;}
+
+</style>
+</head>
+<body>
+
+<!-- ── status bar ── -->
+<div class="statusbar">
+  <span class="item"><span class="dot"></span> SYS://OPERATIONAL</span>
+  <span class="item hide-sm">UPTIME 99.97%</span>
+  <span class="item hide-sm">REGION EU-WEST-2</span>
+  <span class="item hide-sm">LAT 14ms</span>
+  <span class="spacer"></span>
+  <span class="item hide-sm">v2.4.1</span>
+  <span class="item" id="clock">--:--:-- UTC</span>
+</div>
+
+<nav class="topnav">
+  <div class="brand">A<span>P</span>—<span>/</span></div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#stack">Stack</a>
+    <a href="#projects">Projects</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ───── HERO ───── -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-meta">
+        <span class="bar"></span>
+        FILE://PORTFOLIO/ — LONDON, UK — AVAILABLE FOR HIRE
+      </div>
+      <h1 class="hero-title">
+        I make <span class="em">infra</span><br/>
+        that doesn't<br/>
+        wake you at 3am.
+        <span class="small">Cloud / DevOps Engineer · 2+ yrs in production</span>
+      </h1>
+      <p class="hero-desc">
+        I'm <em>Ayush Patel</em> — I build, automate and break-then-fix systems on AWS.
+        I write Terraform like it's prose, treat YAML with suspicion, and believe a quiet
+        pager is the highest form of <em>kindness</em>.
+      </p>
+      <div class="hero-cta">
+        <a class="btn primary" href="#projects">View work <span class="arr">→</span></a>
+        <a class="btn" href="#contact">Get in touch</a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="terminal" aria-hidden="true">
+        <div class="term-head">
+          <span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span>
+          <span class="tname">~ /ayush — zsh</span>
+        </div>
+        <div class="term-body" id="term">
+          <div class="term-line" style="animation-delay:.1s"><span class="prompt">ayush@infra:~$</span> <span class="cmd">whoami --verbose</span></div>
+          <div class="term-line out" style="animation-delay:.5s"> name        : Ayush Patel</div>
+          <div class="term-line out" style="animation-delay:.6s"> role        : <span class="key">Cloud / DevOps Engineer</span></div>
+          <div class="term-line out" style="animation-delay:.7s"> location    : London, UK</div>
+          <div class="term-line out" style="animation-delay:.8s"> exp         : 2+ years prod</div>
+          <div class="term-line" style="animation-delay:1.0s"><span class="prompt">ayush@infra:~$</span> <span class="cmd">terraform plan</span></div>
+          <div class="term-line out" style="animation-delay:1.4s"> + module.career.opportunity</div>
+          <div class="term-line out" style="animation-delay:1.55s"> + module.career.collaboration</div>
+          <div class="term-line ok" style="animation-delay:1.7s"> Plan: 2 to add, 0 to change, 0 to destroy.</div>
+          <div class="term-line" style="animation-delay:1.95s"><span class="prompt">ayush@infra:~$</span> <span class="cmd">kubectl get status</span></div>
+          <div class="term-line ok" style="animation-delay:2.25s"> NAME            STATUS    AGE</div>
+          <div class="term-line out" style="animation-delay:2.4s"> hire-me-pod     <span class="ok">Running</span>   2y+</div>
+          <div class="term-line" style="animation-delay:2.6s"><span class="prompt">ayush@infra:~$</span> <span class="cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── ABOUT ───── -->
+  <section id="about" class="block">
+    <div class="section-head">
+      <span class="section-num">/01 — IDENTITY</span>
+      <h2 class="section-title">About <em>the operator</em></h2>
+      <span class="section-meta">// readme.md</span>
+    </div>
+
+    <div class="about-grid reveal">
+      <div class="about-prose">
+        <p>
+          I came up the way most good DevOps engineers do — <span class="hl">by being on call</span> when
+          things broke. Two years in, I've shipped infrastructure that handles real traffic, written pipelines
+          that ship code in minutes instead of days, and learned that <span class="hl">the best alert is the one that never fires</span>.
+        </p>
+        <p>
+          My work lives at the intersection of <em>AWS</em>, <em>Terraform</em>, and <em>Kubernetes</em> — but the real job is
+          translating fragile, manual processes into systems that quietly do the right thing, repeatedly, at 4am, without me.
+        </p>
+        <p class="signature">currently shipping from London · open to remote &amp; on-site UK</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="num"><em>2</em>+</div>
+          <div class="lbl">Years in production</div>
+        </div>
+        <div class="stat">
+          <div class="num"><em>99.9</em>%</div>
+          <div class="lbl">SLO target hit</div>
+        </div>
+        <div class="stat">
+          <div class="num"><em>40</em>+</div>
+          <div class="lbl">Pipelines authored</div>
+        </div>
+        <div class="stat">
+          <div class="num"><em>0</em></div>
+          <div class="lbl">Pages last weekend</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── STACK ───── -->
+  <section id="stack" class="block">
+    <div class="section-head">
+      <span class="section-num">/02 — TOOLING</span>
+      <h2 class="section-title">The <em>stack</em></h2>
+      <span class="section-meta">// production-tested</span>
+    </div>
+
+    <div class="stack-grid reveal">
+      <div class="tool" style="--lvl:92%">
+        <div class="tool-head"><span class="tool-glyph"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>AWS</title><path d="M6.763 10.036c0 .296.032.535.088.71.064.176.144.368.256.576.04.063.056.127.056.183 0 .08-.048.16-.152.24l-.503.335a.383.383 0 01-.208.072c-.08 0-.16-.04-.239-.112a2.47 2.47 0 01-.287-.375 6.18 6.18 0 01-.248-.471c-.622.734-1.405 1.101-2.347 1.101-.67 0-1.205-.191-1.596-.574-.391-.384-.59-.894-.59-1.533 0-.678.239-1.23.726-1.644.487-.415 1.133-.623 1.955-.623.272 0 .551.024.846.064.296.04.6.104.918.176v-.583c0-.607-.127-1.03-.375-1.277-.255-.248-.686-.367-1.3-.367-.28 0-.568.031-.863.103-.295.072-.583.16-.862.272a2.287 2.287 0 01-.28.104.488.488 0 01-.127.023c-.112 0-.168-.08-.168-.247v-.391c0-.128.016-.224.056-.28a.597.597 0 01.224-.167c.279-.144.614-.264 1.005-.36a4.84 4.84 0 011.246-.151c.95 0 1.644.216 2.091.647.439.43.662 1.085.662 1.963v2.586zm-3.24 1.214c.263 0 .534-.048.822-.144.287-.096.543-.271.758-.51.128-.152.224-.32.272-.512.047-.191.08-.423.08-.694v-.335a6.66 6.66 0 00-.735-.136 6.02 6.02 0 00-.75-.048c-.535 0-.926.104-1.19.32-.263.215-.39.518-.39.917 0 .375.095.655.295.846.191.2.47.296.838.296zm6.41.862c-.144 0-.24-.024-.304-.08-.064-.048-.12-.16-.168-.311L7.586 5.55a1.398 1.398 0 01-.072-.32c0-.128.064-.2.191-.2h.783c.151 0 .255.025.31.08.065.048.113.16.16.312l1.342 5.284 1.245-5.284c.04-.16.088-.264.151-.312a.549.549 0 01.32-.08h.638c.152 0 .256.025.32.08.063.048.12.16.151.312l1.261 5.348 1.381-5.348c.048-.16.104-.264.16-.312a.52.52 0 01.311-.08h.743c.127 0 .2.065.2.2 0 .04-.009.08-.017.128a1.137 1.137 0 01-.056.2l-1.923 6.17c-.048.16-.104.263-.168.311a.51.51 0 01-.303.08h-.687c-.151 0-.255-.024-.32-.08-.063-.056-.119-.16-.15-.32l-1.238-5.148-1.23 5.14c-.04.16-.087.264-.15.32-.065.056-.177.08-.32.08zm10.256.215c-.415 0-.83-.048-1.229-.143-.399-.096-.71-.2-.918-.32-.128-.071-.215-.151-.247-.223a.563.563 0 01-.048-.224v-.407c0-.167.064-.247.183-.247.048 0 .096.008.144.024.048.016.12.048.2.08.272.12.567.215.878.279.32.064.63.096.95.096.502 0 .894-.088 1.165-.264a.86.86 0 00.415-.758.777.777 0 00-.215-.559c-.144-.151-.416-.287-.807-.415l-1.157-.36c-.583-.183-1.014-.454-1.277-.813a1.902 1.902 0 01-.4-1.158c0-.335.073-.63.216-.886.144-.255.335-.479.575-.654.24-.184.51-.32.83-.415.32-.096.655-.136 1.006-.136.175 0 .359.008.535.032.183.024.35.056.518.088.16.04.312.08.455.127.144.048.256.096.336.144a.69.69 0 01.24.2.43.43 0 01.071.263v.375c0 .168-.064.256-.184.256a.83.83 0 01-.303-.096 3.652 3.652 0 00-1.532-.311c-.455 0-.815.071-1.062.223-.248.152-.375.383-.375.71 0 .224.08.416.24.567.159.152.454.304.877.44l1.134.358c.574.184.99.44 1.237.767.247.327.367.702.367 1.117 0 .343-.072.655-.207.926-.144.272-.336.511-.583.703-.248.2-.543.343-.886.447-.36.111-.734.167-1.142.167zM21.698 16.207c-2.626 1.94-6.442 2.969-9.722 2.969-4.598 0-8.74-1.7-11.87-4.526-.247-.223-.024-.527.272-.351 3.384 1.963 7.559 3.153 11.877 3.153 2.914 0 6.114-.607 9.06-1.852.439-.2.814.287.383.607zM22.792 14.961c-.336-.43-2.22-.207-3.074-.103-.255.032-.295-.192-.063-.36 1.5-1.053 3.967-.75 4.254-.399.287.36-.08 2.826-1.485 4.007-.215.184-.423.088-.327-.151.32-.79 1.03-2.57.695-2.994z"/></svg></span><span class="tool-tag">cloud</span></div>
+        <div class="tool-name">AWS</div>
+        <div class="tool-desc">EC2, ECS, EKS, RDS, Lambda, VPC, IAM, S3, CloudWatch, Route 53.</div>
+        <div class="tool-bar"></div>
+      </div>
+      <div class="tool" style="--lvl:90%">
+        <div class="tool-head"><span class="tool-glyph"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Terraform</title><path d="M1.44 0v7.575l6.561 3.79V3.787zm21.12 4.227l-6.561 3.791v7.574l6.56-3.787zM8.72 4.23v7.575l6.561 3.787V8.018zm0 8.405v7.575L15.28 24v-7.578z"/></svg></span><span class="tool-tag">iac</span></div>
+        <div class="tool-name">Terraform</div>
+        <div class="tool-desc">Modular IaC, remote state, workspaces, custom providers.</div>
+        <div class="tool-bar"></div>
+      </div>
+      <div class="tool" style="--lvl:85%">
+        <div class="tool-head"><span class="tool-glyph"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Kubernetes</title><path d="M10.204 14.35l.007.01-.999 2.413a5.171 5.171 0 0 1-2.075-2.597l2.578-.437.004.005a.44.44 0 0 1 .484.606zm-.833-2.129a.44.44 0 0 0 .173-.756l.002-.011L7.585 9.7a5.143 5.143 0 0 0-.73 3.255l2.514-.725.002-.009zm1.145-1.98a.44.44 0 0 0 .699-.337l.01-.005.15-2.62a5.144 5.144 0 0 0-3.092 1.499l2.123 1.504.11-.041zm.76 2.171l1.029.495 1.03-.494.256-1.114-.708-.892h-1.149l-.71.891zm1.018-5.928a5.16 5.16 0 0 0-1.385.262l1.39 2.228h.013a.44.44 0 0 0 .699.337l.01.005 2.123-1.504a5.171 5.171 0 0 0-2.85-1.328zm5.916 2.685a5.176 5.176 0 0 0-.954-1.514l-1.99 1.776.002.005a.44.44 0 0 0 .175.755l.001.011-.001.001 2.519.726c.119-.589.103-1.187-.045-1.76zm-3.247.97l-.003-.012-.96-.165-.165.96-.013.003 1.057 1.281 1.563-.34.165-.96-1.644.327zm-.33 4.072a5.156 5.156 0 0 0 1.46-1.18 5.144 5.144 0 0 0 .9-1.609l-2.518.726c-.005.005-.01.01-.013.013l-.002.011a.44.44 0 0 0-.184.61l-.001.011-.002.001-.003.011-.997 2.413a5.176 5.176 0 0 0 1.36-1.007zM12 9.806h-.001 0c-1.213 0-2.196.984-2.196 2.197A2.196 2.196 0 1 0 12 9.806zm-.029 8.184a5.144 5.144 0 0 0 3.31-1.193l-.999-2.413c-.005-.001-.01-.001-.014-.003l-.001-.011a.44.44 0 0 0-.484.606l-.011.001-1.801 2.013zm-1.91-.317a5.156 5.156 0 0 0 .76.317l-.001-.011-1.799-2.012-.011-.001a.44.44 0 0 0-.484-.605l-.013.002-2.578.437a5.156 5.156 0 0 0 4.126 1.873zM23.485 12.003c0-2.66-1.075-5.069-2.815-6.815L12 0 3.33 5.188A9.65 9.65 0 0 0 .515 12.003c0 5.244 4.241 9.503 9.485 9.503h.014c5.245 0 9.485-4.259 9.485-9.503h.014z"/></svg></span><span class="tool-tag">orchestration</span></div>
+        <div class="tool-name">Kubernetes</div>
+        <div class="tool-desc">EKS, K3s, Helm charts, operators, RBAC, network policies.</div>
+        <div class="tool-bar"></div>
+      </div>
+      <div class="tool" style="--lvl:88%">
+        <div class="tool-head"><span class="tool-glyph"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Docker</title><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.186m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.186.186 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 00-.75.748 11.376 11.376 0 00.692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 003.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288Z"/></svg></span><span class="tool-tag">runtime</span></div>
+        <div class="tool-name">Docker</div>
+        <div class="tool-desc">Multi-stage builds, distroless images, compose, registries.</div>
+        <div class="tool-bar"></div>
+      </div>
+
+      <div class="tool" style="--lvl:80%">
+        <div class="tool-head"><span class="tool-glyph"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Ansible</title><path d="M12 0C5.388 0 0 5.388 0 12s5.388 12 12 12 12-5.35 12-12c0-6.612-5.388-12-12-12zm-1.04 5.07c.65 0 1.187.498 1.187 1.184L17.21 18.4l-4.327-3.48-3.215 7.732C4.715 22.193.92 17.598.92 12.114.92 6.21 5.59 1.54 11.493 1.54l-.534 3.527z"/></svg></span><span class="tool-tag">config</span></div>
+        <div class="tool-name">Ansible</div>
+        <div class="tool-desc">Playbooks, roles, dynamic inventory, idempotent provisioning.</div>
+        <div class="tool-bar"></div>
+      </div>
+      <div class="tool" style="--lvl:87%">
+        <div class="tool-head"><span class="tool-glyph"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitLab</title><path d="m23.6004 9.5927-.0337-.0862L20.3.9555a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1325a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1325 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></svg></span><span class="tool-tag">ci/cd</span></div>
+        <div class="tool-name">GitLab CI</div>
+        <div class="tool-desc">Multi-stage pipelines, runners, parent-child, DAG, security scans.</div>
+        <div class="tool-bar"></div>
+      </div>
+      <div class="tool" style="--lvl:84%">
+        <div class="tool-head"><span class="tool-glyph"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></span><span class="tool-tag">ci/cd</span></div>
+        <div class="tool-name">GitHub Actions</div>
+        <div class="tool-desc">Reusable workflows, OIDC to AWS, matrix builds, composite actions.</div>
+        <div class="tool-bar"></div>
+      </div>
+      <div class="tool" style="--lvl:78%">
+        <div class="tool-head"><span class="tool-glyph"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Jenkins</title><path d="M19.382 18.591c-.193.391-.387.771-.585 1.142.21-.04.4-.144.585-.244zM12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-1.5 5.5c1.5 0 2.5 1 2.5 2.5s-1 2.5-2.5 2.5S8 9.5 8 8s1-2.5 2.5-2.5zm5 0c1.5 0 2.5 1 2.5 2.5s-1 2.5-2.5 2.5S13 9.5 13 8s1-2.5 2.5-2.5zM12 13c3.5 0 6 2.5 6 5.5 0 0-2 1.5-6 1.5s-6-1.5-6-1.5C6 15.5 8.5 13 12 13zm0 1.5c-2.5 0-4.5 1.5-4.5 4 0 0 1.5 1 4.5 1s4.5-1 4.5-1c0-2.5-2-4-4.5-4z"/></svg></span><span class="tool-tag">automation</span></div>
+        <div class="tool-name">Jenkins</div>
+        <div class="tool-desc">Declarative pipelines, shared libraries, plugin hardening.</div>
+        <div class="tool-bar"></div>
+      </div>
+
+      <div class="tool" style="--lvl:82%">
+        <div class="tool-head"><span class="tool-glyph"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Grafana</title><path d="M23.93 11.018a8.943 8.943 0 0 0-.21-1.43 8.708 8.708 0 0 0-.476-1.554 8.95 8.95 0 0 0-.86-1.572 8.92 8.92 0 0 0-.625-.785 4.892 4.892 0 0 0 .463-1.022c.123-.396.18-.78.196-1.165.014-.395-.014-.78-.084-1.151a7.358 7.358 0 0 0-.297-1.05A7.227 7.227 0 0 0 21.08 0c-.65.029-1.273.137-1.864.341a7.376 7.376 0 0 0-1.598.778 4.84 4.84 0 0 0-2.114-.642A6.793 6.793 0 0 0 14.348.45c-.388 0-.793.025-1.198.07a9.806 9.806 0 0 0-1.273.246 10.05 10.05 0 0 0-2.39.991 10.06 10.06 0 0 0-2.029 1.474 10.06 10.06 0 0 0-1.555 1.804c-.422.65-.793 1.34-1.083 2.064-.29.71-.5 1.45-.65 2.187-.026.124-.038.249-.06.373-.058.024-.115.041-.171.066a13.69 13.69 0 0 0-.86.42 13.7 13.7 0 0 0-.835.486c-.275.165-.55.343-.825.527-.014.012-.028.012-.041.025-.124-.054-.262-.108-.387-.166a4.948 4.948 0 0 0-.527-.166 7.71 7.71 0 0 0-.55-.124C.65 11.198.302 11.156 0 11.156a4.69 4.69 0 0 0 .26 1.554c.18.46.42.872.681 1.243.262.371.567.71.872 1.018.067.067.137.124.207.183-.054.18-.111.358-.166.546a13.06 13.06 0 0 0-.371 1.555 12.74 12.74 0 0 0-.18 1.61v.097c-1.03.526-1.974 1.246-2.787 2.106 1.092.247 2.243.345 3.395.291.262.527.566 1.025.901 1.484a8.802 8.802 0 0 0 2.928 2.535c.553.302 1.13.534 1.738.71a7.9 7.9 0 0 0 1.78.305 5.93 5.93 0 0 0 .445.014h.067c.083 0 .153 0 .234-.014a9.18 9.18 0 0 0 1.27-.166 8.728 8.728 0 0 0 1.205-.358 8.825 8.825 0 0 0 2.106-1.13 8.94 8.94 0 0 0 1.633-1.555 9.082 9.082 0 0 0 1.131-1.766c.014-.041.041-.083.054-.124.319.054.65.083.972.083.083 0 .15 0 .222-.014a4.23 4.23 0 0 0 .817-.097 6.232 6.232 0 0 0 .817-.262 8.142 8.142 0 0 0 .755-.371 7.122 7.122 0 0 0 .695-.46 7.74 7.74 0 0 0 .595-.554 6.59 6.59 0 0 0 .517-.61 6.92 6.92 0 0 0 .858-1.36c-.265-.156-.527-.318-.794-.474-.265-.155-.527-.317-.794-.473zm-2.382-1.38c-.012.275-.054.55-.124.82l-.014.029c-.014.041-.012.083-.026.124a3.34 3.34 0 0 1-.345.79c-.275.443-.65.81-1.103 1.058a3.05 3.05 0 0 1-.69.247c-.234.054-.483.083-.717.069a4.143 4.143 0 0 1-.689-.083 5.2 5.2 0 0 1-.622-.18c-.04-.014-.083-.029-.124-.043-.276-.124-.527-.262-.762-.41a4.74 4.74 0 0 1-.6-.5 4.8 4.8 0 0 1-.486-.567 4.69 4.69 0 0 1-.358-.594 5.05 5.05 0 0 1-.235-.6 4.97 4.97 0 0 1-.097-.317c-.014-.041-.014-.083-.028-.124-.014-.097-.041-.18-.054-.275-.014-.083-.029-.166-.029-.249-.014-.083-.014-.18-.014-.262 0-.165 0-.33.029-.486.012-.058.026-.124.026-.18.014-.069.029-.124.043-.18.041-.18.097-.36.18-.527.124-.262.276-.5.46-.71a3.32 3.32 0 0 1 .624-.527 3.34 3.34 0 0 1 .682-.317c.111-.041.234-.069.358-.097.124-.026.234-.041.358-.054.083-.014.18-.014.262-.014.235.014.471.041.69.083.027 0 .054.012.083.012.193.054.385.124.567.207.097.041.193.097.275.151a2.66 2.66 0 0 1 .263.18c.082.054.165.124.234.18.137.111.262.234.371.371.124.137.235.275.331.413.083.137.18.275.247.41.069.139.124.276.18.413.054.137.097.275.124.413.027.137.054.275.069.398.014.137.014.275.014.413l-.042.41z"/></svg></span><span class="tool-tag">obs</span></div>
+        <div class="tool-name">Grafana</div>
+        <div class="tool-desc">Dashboards, alerting, Loki + Prometheus + Tempo stack.</div>
+        <div class="tool-bar"></div>
+      </div>
+      <div class="tool" style="--lvl:80%">
+        <div class="tool-head"><span class="tool-glyph"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Prometheus</title><path d="M11.999 0C5.377 0 .002 5.376 0 12.001 0 18.624 5.376 24 12 24c6.626 0 12-5.376 12-11.999C24 5.375 18.625 0 11.999 0Zm0 22.466c-1.873 0-3.39-1.196-3.39-2.673H15.39c0 1.477-1.516 2.673-3.39 2.673zm5.594-3.563H6.412V16.95h11.18v1.953zm-.04-2.962h-11.1c-.037-.043-.075-.084-.11-.128-1.122-1.366-1.387-2.08-1.643-2.806.004.001 4.494 1.029 8.286 1.029 0 0 1.96 0 4.838-1.025-.255.726-.485 1.418-1.605 2.802-.05.062-.097.124-.142.184-.115.158-.336-.095-.523-.056zm-9.954-9.13C7.732 6.232 7.918 5.668 7.92 4.4c-.001-.184-.001-.366.005-.546 1.193 1.27 1.622 2.957 1.622 4.337 0 .684-.139 1.226-.365 1.654.011-.215-.005-.466-.041-.713-.034-.234-.142-.567-.296-.802-.16-.244-.339-.466-.518-.692-.18-.225-.353-.451-.495-.69-.142-.24-.245-.49-.245-.787 0-.296.14-.624.379-.872.236-.252.568-.428.95-.488-.165.193-.299.413-.402.654-.103.244-.169.51-.183.8-.013.28.034.557.116.79zm9.954 6.957s-.32-.28-.78-.452c-.46-.171-1.066-.232-1.535-.04-.467.193-.799.567-.96.97-.16.402-.157.832-.05 1.226-.79-.16-1.74-.547-1.69-1.736.025-.61.236-1.11.563-1.518.328-.408.776-.724 1.27-.944 1.014-.45 2.231-.522 2.83.063.602.587.602 1.585.354 2.43z"/></svg></span><span class="tool-tag">obs</span></div>
+        <div class="tool-name">Prometheus</div>
+        <div class="tool-desc">PromQL, exporters, recording rules, federated scraping.</div>
+        <div class="tool-bar"></div>
+      </div>
+      <div class="tool" style="--lvl:75%">
+        <div class="tool-head"><span class="tool-glyph"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Helm</title><path d="M22.026 14.367c-.4-.376-.86-.677-1.314-.96-.45-.281-.8-.5-1.041-.65a72.04 72.04 0 0 1-2.226-1.435c.05-.083.1-.15.142-.234.667-1.151.876-2.302.6-3.36-.275-1.05-1.026-1.992-2.218-2.768l-.65-.451-.6.526a8.026 8.026 0 0 0-1.66 2.018c-.467.793-.708 1.61-.717 2.41-.008.117 0 .226.008.343-.45.025-.91.075-1.36.142a26.728 26.728 0 0 1 .075-1.66c0-.4.025-.717.025-.952h-1.51c0 .234.008.55.025.952l.075 1.66a25.93 25.93 0 0 0-1.36-.142c.008-.117.017-.226.008-.343-.008-.8-.25-1.617-.717-2.41a8.025 8.025 0 0 0-1.66-2.018l-.6-.526-.65.45c-1.193.777-1.943 1.72-2.218 2.77-.276 1.057-.067 2.208.6 3.36.05.083.1.15.142.234A82.05 82.05 0 0 1 4.33 12.757c-.241.15-.59.369-1.04.65-.452.283-.91.584-1.315.96-.825.752-1.275 1.71-1.302 2.795-.025 1.084.358 2.116 1.143 3.043l.443.526h.685c.717 0 1.443-.225 2.135-.5.692-.275 1.31-.625 1.86-.943.658-.376 1.276-.71 1.852-1.026a78.29 78.29 0 0 0 2.16-1.235l.026.184c.083.567.158 1.135.225 1.71.067.575.117 1.01.142 1.293l.083.835.835-.108.835-.108v-.835c0-.284 0-.717-.05-1.293-.05-.575-.117-1.143-.226-1.71l-.025-.184c.667.4 1.385.81 2.16 1.234.575.317 1.193.65 1.85 1.026.55.318 1.168.668 1.86.943.692.275 1.418.5 2.135.5h.685l.443-.526c.785-.927 1.168-1.96 1.143-3.043-.027-1.084-.477-2.043-1.302-2.795z"/></svg></span><span class="tool-tag">k8s</span></div>
+        <div class="tool-name">Helm</div>
+        <div class="tool-desc">Chart authoring, hooks, values overlays, umbrella charts.</div>
+        <div class="tool-bar"></div>
+      </div>
+      <div class="tool" style="--lvl:88%">
+        <div class="tool-head"><span class="tool-glyph"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Terminal</title><path d="M2 4h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 2v12h20V6H2zm2.5 3.5l3 3-3 3L5.5 14l2-1.5-2-1.5 1-1.5zm6 4.5h5v1h-5v-1z"/></svg></span><span class="tool-tag">scripting</span></div>
+        <div class="tool-name">Bash · Python</div>
+        <div class="tool-desc">Operational scripting, boto3 automations, CLI tools.</div>
+        <div class="tool-bar"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── PROJECTS ───── -->
+  <section id="projects" class="block">
+    <div class="section-head">
+      <span class="section-num">/03 — DEPLOYMENTS</span>
+      <h2 class="section-title">Selected <em>work</em></h2>
+      <span class="section-meta">// last 24 months</span>
+    </div>
+
+    <div class="projects reveal">
+
+      <div class="project">
+        <div class="pidx">[ 001 ]</div>
+        <div class="ptitle">
+          Multi-AZ EKS platform for production workloads
+          <span class="yr">— 2025 · TERRAFORM, EKS, ARGO CD</span>
+        </div>
+        <div class="pbody">
+          Designed and deployed a production EKS platform across three availability zones with
+          GitOps delivery via Argo CD, IRSA-scoped service accounts, and zero-downtime blue/green
+          rollouts via Argo Rollouts. Cut release lead time from days to <em>under 12 minutes</em>.
+          <div class="metrics">
+            <div><b>12 min</b><small>release lead time</small></div>
+            <div><b>3-AZ</b><small>HA topology</small></div>
+            <div><b>0</b><small>downtime deploys</small></div>
+          </div>
+          <div class="stack">
+            <span>Terraform</span><span>EKS</span><span>Argo CD</span><span>Helm</span><span>IRSA</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="pidx">[ 002 ]</div>
+        <div class="ptitle">
+          End-to-end CI/CD pipeline for a microservices estate
+          <span class="yr">— 2024 · GITLAB CI, DOCKER, TRIVY</span>
+        </div>
+        <div class="pbody">
+          Replaced a brittle Jenkins monolith with a parent-child GitLab CI architecture across
+          18 services. Embedded Trivy scanning, SBOM generation, and OIDC-based AWS auth — no
+          long-lived secrets in the build runners.
+          <div class="metrics">
+            <div><b>18</b><small>services onboarded</small></div>
+            <div><b>4×</b><small>build speedup</small></div>
+            <div><b>100%</b><small>OIDC adoption</small></div>
+          </div>
+          <div class="stack">
+            <span>GitLab CI</span><span>Docker</span><span>Trivy</span><span>OIDC</span><span>AWS</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="pidx">[ 003 ]</div>
+        <div class="ptitle">
+          Observability stack: Prometheus, Loki & Grafana
+          <span class="yr">— 2024 · GRAFANA, LOKI, ALERTMANAGER</span>
+        </div>
+        <div class="pbody">
+          Stood up a full-stack observability platform with Prometheus federation, Loki for
+          structured logs, and Grafana dashboards for SLOs and burn-rate alerts — replacing
+          three separate vendor tools and reducing observability spend by <em>~38%</em>.
+          <div class="metrics">
+            <div><b>−38%</b><small>tooling cost</small></div>
+            <div><b>4 min</b><small>median MTTR</small></div>
+            <div><b>40+</b><small>SLO panels</small></div>
+          </div>
+          <div class="stack">
+            <span>Prometheus</span><span>Loki</span><span>Grafana</span><span>Alertmanager</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="pidx">[ 004 ]</div>
+        <div class="ptitle">
+          Ansible-driven configuration baseline for hybrid fleet
+          <span class="yr">— 2024 · ANSIBLE, AWS SSM, CIS</span>
+        </div>
+        <div class="pbody">
+          Authored idempotent Ansible roles to enforce CIS-aligned hardening across an EC2 +
+          on-prem fleet, integrated with AWS SSM for credential-less execution. Drift detection
+          baked into a nightly GitHub Actions workflow.
+          <div class="metrics">
+            <div><b>120+</b><small>nodes managed</small></div>
+            <div><b>CIS L1</b><small>baseline enforced</small></div>
+            <div><b>nightly</b><small>drift checks</small></div>
+          </div>
+          <div class="stack">
+            <span>Ansible</span><span>AWS SSM</span><span>GitHub Actions</span><span>CIS</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ───── PIPELINE / TIMELINE ───── -->
+  <section id="timeline" class="block">
+    <div class="section-head">
+      <span class="section-num">/04 — RUN HISTORY</span>
+      <h2 class="section-title">Career <em>pipeline</em></h2>
+      <span class="section-meta">// stage logs</span>
+    </div>
+
+    <div class="reveal pipeline" style="margin-bottom: 60px">
+<pre>
+<span class="stage">┌─[ build ]</span>──────<span class="stage">┌─[ test ]</span>──────<span class="stage">┌─[ stage ]</span>─────<span class="stage">┌─[ deploy ]</span>────<span class="stage">┌─[ observe ]</span>──┐
+<span class="stage">│</span>                <span class="stage">│</span>               <span class="stage">│</span>                <span class="stage">│</span>               <span class="stage">│</span>             │
+<span class="stage">│</span> <span class="step">B.Sc CS</span>        <span class="stage">│</span> <span class="step">junior role</span>   <span class="stage">│</span> <span class="step">DevOps Eng.</span>    <span class="stage">│</span> <span class="step">prod systems</span>  <span class="stage">│</span> <span class="step">??? you tell</span> │
+<span class="stage">│</span> <span class="ok">✓ passed</span>       <span class="stage">│</span> <span class="ok">✓ shipped</span>     <span class="stage">│</span> <span class="ok">✓ owning IaC</span>   <span class="stage">│</span> <span class="ok">✓ on-call</span>     <span class="stage">│</span> <span class="warn">▶ pending</span>   │
+<span class="stage">└──────────────</span>──<span class="stage">┴───────────────</span>──<span class="stage">┴────────────────</span>──<span class="stage">┴───────────────</span>──<span class="stage">┴─────────────</span>┘
+</pre>
+    </div>
+
+    <div class="timeline reveal">
+      <div class="tl-item">
+        <div class="tl-date">2024 — PRESENT<span class="status">● ACTIVE</span></div>
+        <div>
+          <div class="tl-role">Cloud / DevOps Engineer <em>— production team</em></div>
+          <div class="tl-desc">
+            <ul>
+              <li>Owning Terraform monorepo across multiple AWS accounts with workspace-per-env layout.</li>
+              <li>Driving the migration from Jenkins to GitLab CI + GitHub Actions with OIDC federation.</li>
+              <li>Operating EKS clusters with Argo CD, Helm, and full Prometheus / Loki / Grafana stack.</li>
+              <li>Embedded security: Trivy, tfsec, IAM Access Analyzer, secret-scanning in pre-commit.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">2023 — 2024<span class="status">○ COMPLETED</span></div>
+        <div>
+          <div class="tl-role">Junior DevOps / Cloud Engineer</div>
+          <div class="tl-desc">
+            <ul>
+              <li>Built the team's first CI/CD pipelines in GitLab CI for containerised services.</li>
+              <li>Authored Ansible playbooks to standardise EC2 provisioning &amp; OS hardening.</li>
+              <li>Set up Grafana dashboards and Alertmanager routing — cutting MTTR substantially.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">CONTINUOUS<span class="status">○ LEARNING</span></div>
+        <div>
+          <div class="tl-role">Certifications &amp; deep dives <em>— self-driven</em></div>
+          <div class="tl-desc">
+            <ul>
+              <li>AWS CLF-C02 → SAA-C03 (in progress) → DOP-C02 (target).</li>
+              <li>14-month structured study plan covering networking, security, and SRE practice.</li>
+              <li>Side-projects: home networking lab, K3s cluster on Raspberry Pis, pet automations.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── GET IN TOUCH ───── -->
+  <section id="contact" class="contact">
+    <div class="contact-inner">
+      <div class="ping">▌ PING — RESPONSE TIME &lt; 24h · STATUS: <span style="color:var(--green)">ACCEPTING REQUESTS</span></div>
+      <h2>
+        Let's <em>ship</em> something<br/>
+        that doesn't<br/>
+        page you back.
+      </h2>
+      <p class="contact-lede">
+        Got a role, a project, or a broken pipeline? Drop me a line — I read every message
+        and reply within a day.
+      </p>
+
+      <div class="contact-actions">
+        <a class="btn primary" href="mailto:ayushpatelcloud@gmail.com?subject=Let%27s%20talk%20DevOps">
+          Email me <span class="arr">→</span>
+        </a>
+        <a class="btn" href="https://uk.linkedin.com/in/ayush-patel-553135236" target="_blank" rel="noopener">
+          Connect on LinkedIn <span class="arr">↗</span>
+        </a>
+        <a class="btn" href="#" id="cvDownload">
+          Download CV <span class="arr">↓</span>
+        </a>
+      </div>
+
+      <!-- ── form + sidebar ── -->
+      <div class="contact-form-wrap">
+        <form class="contact-form" id="contactForm" novalidate>
+          <div class="form-head">
+            <span class="form-num">// new_message.sh</span>
+            <span class="form-status" id="formStatus">READY</span>
+          </div>
+
+          <div class="form-row two">
+            <label class="field">
+              <span class="lbl">▸ Your name</span>
+              <input type="text" name="name" id="fName" required autocomplete="name" placeholder="Jane Doe" />
+            </label>
+            <label class="field">
+              <span class="lbl">▸ Email address</span>
+              <input type="email" name="email" id="fEmail" required autocomplete="email" placeholder="jane@company.com" />
+            </label>
+          </div>
+
+          <label class="field">
+            <span class="lbl">▸ Subject</span>
+            <input type="text" name="subject" id="fSubject" required placeholder="DevOps role at Acme — quick intro" />
+          </label>
+
+          <label class="field">
+            <span class="lbl">▸ Message</span>
+            <textarea name="message" id="fMessage" rows="5" required placeholder="Tell me about the role, the team, or the problem you're trying to solve…"></textarea>
+          </label>
+
+          <div class="form-foot">
+            <button type="submit" class="btn primary">
+              Send message <span class="arr">→</span>
+            </button>
+            <span class="form-hint">opens your email client — no data leaves this page</span>
+          </div>
+        </form>
+
+        <aside class="contact-side">
+          <div class="cs-block">
+            <div class="cs-lbl">▸ Direct email</div>
+            <div class="cs-row">
+              <a href="mailto:ayushpatelcloud@gmail.com" id="emailLink">ayushpatelcloud@gmail.com</a>
+              <button class="copy-btn" id="copyEmail" type="button" aria-label="Copy email">copy</button>
+            </div>
+          </div>
+
+          <div class="cs-block">
+            <div class="cs-lbl">▸ LinkedIn</div>
+            <a href="https://uk.linkedin.com/in/ayush-patel-553135236" target="_blank" rel="noopener">linkedin.com/in/ayush-patel</a>
+          </div>
+
+          <div class="cs-block">
+            <div class="cs-lbl">▸ GitHub</div>
+            <a href="https://github.com/Ayushpatel1304" target="_blank" rel="noopener">github.com/Ayushpatel1304</a>
+          </div>
+
+          <div class="cs-block">
+            <div class="cs-lbl">▸ Location</div>
+            <span class="cs-static">London · UK<br/><small>Open to remote &amp; on-site</small></span>
+          </div>
+
+          <div class="cs-block">
+            <div class="cs-lbl">▸ Availability</div>
+            <span class="cs-static" style="color:var(--green)">● Open to opportunities</span>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- floating contact button -->
+  <a href="#contact" class="float-cta" aria-label="Jump to contact form">
+    <span class="fc-dot"></span>
+    <span class="fc-text">Get in touch</span>
+  </a>
+
+  <footer>
+    <div>© <span id="yr">2026</span> AYUSH PATEL — BUILT FROM SCRATCH, NO TEMPLATES.</div>
+    <div class="ascii">[ EOF ]  ░░▒▒▓▓██  KEEP IT BORING IN PROD.</div>
+  </footer>
+
+</main>
+
+<script>
+  // live UTC clock
+  const clock = document.getElementById('clock');
+  function tick(){
+    const d = new Date();
+    const hh = String(d.getUTCHours()).padStart(2,'0');
+    const mm = String(d.getUTCMinutes()).padStart(2,'0');
+    const ss = String(d.getUTCSeconds()).padStart(2,'0');
+    clock.textContent = `${hh}:${mm}:${ss} UTC`;
+  }
+  tick(); setInterval(tick, 1000);
+
+  // year
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // scroll reveals
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('on'); obs.unobserve(e.target);}
+    });
+  }, { threshold: .12 });
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+  // smooth nav active hint
+  document.querySelectorAll('.nav-links a').forEach(a=>{
+    a.addEventListener('click', ()=>{
+      document.querySelectorAll('.nav-links a').forEach(x=>x.style.color='');
+      a.style.color = 'var(--ink)';
+    });
+  });
+
+  // ── editable contact details (change these to your real ones) ──
+  const CONTACT = {
+    email:    'ayushpatelcloud@gmail.com',
+    linkedin: 'https://uk.linkedin.com/in/ayush-patel-553135236',
+    github:   'https://github.com/Ayushpatel1304',
+    cvUrl:    '#'  // replace with real CV link, e.g. './AyushPatel-CV.pdf'
+  };
+
+  // ── contact form → mailto handoff ──
+  const form = document.getElementById('contactForm');
+  const fStatus = document.getElementById('formStatus');
+  if(form){
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const name    = document.getElementById('fName').value.trim();
+      const email   = document.getElementById('fEmail').value.trim();
+      const subject = document.getElementById('fSubject').value.trim();
+      const message = document.getElementById('fMessage').value.trim();
+
+      if(!name || !email || !subject || !message){
+        fStatus.textContent = 'INCOMPLETE';
+        fStatus.className = 'form-status error';
+        return;
+      }
+
+      fStatus.textContent = 'SENDING';
+      fStatus.className = 'form-status sending';
+
+      const body = `Hi Ayush,%0D%0A%0D%0A${encodeURIComponent(message)}%0D%0A%0D%0A—%0D%0A${encodeURIComponent(name)}%0D%0AReply-to: ${encodeURIComponent(email)}`;
+      const mailto = `mailto:${CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${body}`;
+
+      window.location.href = mailto;
+
+      setTimeout(()=>{
+        fStatus.textContent = 'SENT ✓';
+        fStatus.className = 'form-status sent';
+        form.reset();
+        setTimeout(()=>{
+          fStatus.textContent = 'READY';
+          fStatus.className = 'form-status';
+        }, 3500);
+      }, 800);
+    });
+  }
+
+  // ── copy email to clipboard ──
+  const copyBtn = document.getElementById('copyEmail');
+  if(copyBtn){
+    copyBtn.addEventListener('click', async ()=>{
+      try{
+        await navigator.clipboard.writeText(CONTACT.email);
+        copyBtn.textContent = 'copied ✓';
+        copyBtn.classList.add('copied');
+        setTimeout(()=>{
+          copyBtn.textContent = 'copy';
+          copyBtn.classList.remove('copied');
+        }, 1800);
+      }catch(_){
+        // fallback: select the link text
+        const range = document.createRange();
+        range.selectNodeContents(document.getElementById('emailLink'));
+        const sel = window.getSelection();
+        sel.removeAllRanges(); sel.addRange(range);
+      }
+    });
+  }
+
+  // ── CV download stub (replace cvUrl above) ──
+  const cv = document.getElementById('cvDownload');
+  if(cv){
+    cv.addEventListener('click', (e)=>{
+      if(CONTACT.cvUrl === '#'){
+        e.preventDefault();
+        alert('CV link not set yet — open portfolio.html and update CONTACT.cvUrl in the script tag.');
+      }else{
+        cv.href = CONTACT.cvUrl;
+        cv.setAttribute('download', '');
+      }
+    });
+  }
+
+  // ── floating contact button: show after hero, hide on contact section ──
+  const floatCta = document.querySelector('.float-cta');
+  const contactSection = document.getElementById('contact');
+  if(floatCta && contactSection){
+    window.addEventListener('scroll', ()=>{
+      const y = window.scrollY;
+      const contactTop = contactSection.getBoundingClientRect().top + y - 200;
+      if(y > 600 && y < contactTop){
+        floatCta.classList.add('show');
+      }else{
+        floatCta.classList.remove('show');
+      }
+    }, { passive: true });
+  }
+</script>
+
+</body>
+</html>
