@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RJV Studios | Photography & Video Media Company</title>
 <meta name="description" content="RJV Studios is a media company offering commercial, real estate, portrait, concert and event photography and videography.">
+<meta name="theme-color" content="#0b0b0c">
+<meta property="og:title" content="RJV Studios">
+<meta property="og:description" content="Photography & Video Media Company">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1200&q=80">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
@@ -32,6 +37,7 @@
   }
   img { max-width: 100%; display: block; }
   a { color: inherit; text-decoration: none; }
+  button, input, select, textarea { font: inherit; }
   .container { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 24px; }
   section { padding: 96px 0; }
   h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; line-height: 1.15; }
@@ -64,7 +70,7 @@
   .btn-ghost { background: transparent; color: var(--text); }
   .btn-ghost:hover { background: rgba(200,164,92,.12); }
 
-  /* Header / nav (CSS-only mobile menu) */
+  /* Header / nav */
   header {
     position: fixed; inset: 0 0 auto 0; z-index: 50;
     background: rgba(11,11,12,.82);
@@ -153,8 +159,6 @@
   .tile .label h3 { font-size: 1.1rem; margin-top: 2px; }
   .tile.wide { grid-column: span 2; }
   .tile.tall { grid-row: span 2; }
-  /* Replace these gradients with your photos:
-     .t1::before { background-image: url('images/your-photo.jpg'); } */
   .t2::before { background-image: linear-gradient(135deg, #1f2c3d, #0d1119); }
   .t3::before { background-image: linear-gradient(135deg, #3d2230, #150b11); }
   .t4::before { background-image: linear-gradient(135deg, #20382f, #0c1511); }
@@ -188,6 +192,7 @@
   .contact-info p { color: var(--muted); margin-bottom: 28px; }
   .contact-info ul { list-style: none; display: grid; gap: 14px; }
   .contact-info li span { display: block; font-size: .75rem; letter-spacing: .15em; text-transform: uppercase; color: var(--accent); }
+  .contact-info a { color: var(--text); }
   form { display: grid; gap: 16px; background: var(--card); border: 1px solid var(--line); padding: 34px; border-radius: var(--radius); }
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   label { font-size: .82rem; color: var(--muted); display: grid; gap: 6px; }
@@ -202,7 +207,17 @@
   footer { padding: 40px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: .85rem; }
   .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; }
 
-  /* ===== Hover & transition effects ===== */
+  /* Keyboard focus */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  .burger:focus-visible,
+  .logo:focus-visible {
+    outline: 3px solid rgba(200,164,92,.8);
+    outline-offset: 4px;
+  }
 
   /* Logo + nav links: gold underline slides in */
   .logo { transition: letter-spacing .35s ease, color .3s ease; }
@@ -216,13 +231,13 @@
   }
   .nav-links li:not(:last-child) a:hover::after { transform: scaleX(1); transform-origin: left; }
 
-  /* Buttons: lift, glow and press */
+  /* Buttons */
   .btn { transition: transform .3s ease, box-shadow .3s ease, background .3s ease, color .3s ease, border-color .3s ease; }
   .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(200,164,92,.28); }
   .btn:active { transform: translateY(-1px) scale(.98); }
   .btn-ghost:hover { border-color: var(--text); }
 
-  /* Hero: staggered entrance on page load */
+  /* Hero entrance */
   @keyframes fadeUp {
     from { opacity: 0; translate: 0 32px; }
     to   { opacity: 1; translate: 0 0; }
@@ -237,7 +252,7 @@
   .hero-stats div { transition: transform .3s ease; }
   .hero-stats div:hover { transform: translateY(-4px); }
 
-  /* Service cards: lift, glow, icon spin */
+  /* Service cards */
   .service {
     transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease, background .35s ease;
   }
@@ -251,7 +266,7 @@
   .service h3 { transition: color .3s ease; }
   .service:hover h3 { color: var(--accent); }
 
-  /* Portfolio tiles: zoom, brighten, label slides up, arrow appears */
+  /* Portfolio tiles */
   .tile { transition: box-shadow .4s ease, transform .4s ease; }
   .tile:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0,0,0,.5); }
   .tile::before { transition: transform .7s cubic-bezier(.2,.7,.2,1), filter .5s ease; }
@@ -294,8 +309,7 @@
   .foot span { transition: color .25s ease; }
   .foot span:hover { color: var(--accent); }
 
-  /* Scroll-reveal: sections fade and slide in as they enter view
-     (supported browsers only; others simply show content normally) */
+  /* Scroll reveal */
   @supports (animation-timeline: view()) {
     @keyframes reveal {
       from { opacity: 0; translate: 0 48px; }
@@ -309,15 +323,14 @@
     }
   }
 
-  /* ===== Hero background slideshow (display only) ===== */
+  /* Hero background slideshow */
   .hero { position: relative; overflow: hidden; }
   .hero > .container { position: relative; z-index: 2; }
   .hero-slides {
     position: absolute; inset: 0; z-index: 0;
-    pointer-events: none;      /* not clickable */
+    pointer-events: none;
     user-select: none;
   }
-  /* dark layer so the text stays readable over your photos */
   .hero-slides::after {
     content: ""; position: absolute; inset: 0; z-index: 2;
     background:
@@ -328,8 +341,6 @@
     position: absolute; inset: 0;
     background-size: cover; background-position: center;
     opacity: 0;
-    /* 5 slides x 6s each = 30s loop. If you change the slide count,
-       change 30s below to (number of slides x 6s) and update the delays. */
     animation: slideFade 30s infinite, slideZoom 30s infinite;
   }
   .s1 { animation-delay: 0s; }
@@ -349,23 +360,19 @@
     24%  { transform: scale(1.12); }
     100% { transform: scale(1.12); }
   }
-  /* Swap each gradient for your photo: background-image: url('images/photo1.jpg'); */
   .s1 { background-image: linear-gradient(135deg, #4a3d22, #17130b); }
   .s2 { background-image: linear-gradient(135deg, #1f3550, #0b1018); }
   .s3 { background-image: linear-gradient(135deg, #4a2438, #160b11); }
   .s4 { background-image: linear-gradient(135deg, #1f4a3a, #0b1713); }
   .s5 { background-image: linear-gradient(135deg, #3a2f54, #110e1a); }
 
-  /* Respect users who prefer reduced motion */
+  /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation: none !important;
       transition: none !important;
       scroll-behavior: auto !important;
     }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
     .slide.s1 { opacity: 1; }
   }
 
@@ -399,10 +406,10 @@
 
 <header>
   <div class="container nav">
-    <a href="#home" class="logo">RJV<span>.</span>Studios</a>
-    <input type="checkbox" id="menu-toggle">
+    <a href="#home" class="logo" aria-label="RJV Studios home">RJV<span>.</span>Studios</a>
+    <input type="checkbox" id="menu-toggle" aria-label="Toggle navigation menu">
     <label for="menu-toggle" class="burger" aria-label="Toggle menu">☰</label>
-    <ul class="nav-links">
+    <ul class="nav-links" id="site-nav">
       <li><a href="#services">Services</a></li>
       <li><a href="#work">Work</a></li>
       <li><a href="#process">Process</a></li>
@@ -414,12 +421,7 @@
 
 <main id="home">
 
-  <!-- HERO -->
   <section class="hero">
-    <!-- Background slideshow (display only, not clickable).
-         To use your own work: open the CSS, find ".s1 ... .s5" and swap each gradient for
-         background-image: url('images/your-photo.jpg');
-         To add more slides, copy a <div> below, add a class like s6, and see the CSS comments. -->
     <div class="hero-slides" aria-hidden="true">
       <div class="slide s1"></div>
       <div class="slide s2"></div>
@@ -443,7 +445,6 @@
     </div>
   </section>
 
-  <!-- SERVICES -->
   <section class="services" id="services">
     <div class="container">
       <div class="section-head">
@@ -486,7 +487,6 @@
     </div>
   </section>
 
-  <!-- PORTFOLIO -->
   <section id="work">
     <div class="container">
       <div class="section-head">
@@ -508,7 +508,6 @@
     </div>
   </section>
 
-  <!-- PROCESS -->
   <section class="process" id="process">
     <div class="container">
       <div class="section-head">
@@ -524,7 +523,6 @@
     </div>
   </section>
 
-  <!-- ABOUT -->
   <section id="about">
     <div class="container about-grid">
       <div class="about-text">
@@ -542,7 +540,6 @@
     </div>
   </section>
 
-  <!-- CONTACT -->
   <section class="contact" id="contact">
     <div class="container contact-grid">
       <div class="contact-info">
@@ -550,13 +547,12 @@
         <h2>Let's create something great</h2>
         <p>Share a few details and we'll get back to you with availability and pricing.</p>
         <ul>
-          <li><span>Email</span>info@rjvstudios.co.uk</li>
-          <li><span>Instagram</span>@rjv.studios</li>
+          <li><span>Email</span><a href="mailto:info@rjvstudios.co.uk">info@rjvstudios.co.uk</a></li>
+          <li><span>Instagram</span><a href="https://instagram.com/rjv.studios" target="_blank" rel="noopener noreferrer">@rjv.studios</a></li>
           <li><span>Location</span>London, UK</li>
         </ul>
       </div>
-      <!-- Connect this form to Formspree, Netlify Forms or your own backend by editing the action attribute -->
-      <form action="#" method="post">
+      <form id="contact-form" novalidate>
         <div class="row">
           <label>Name<input type="text" name="name" required></label>
           <label>Email<input type="email" name="email" required></label>
@@ -574,7 +570,7 @@
           </label>
           <label>Date<input type="date" name="date"></label>
         </div>
-        <label>Project details<textarea name="message" placeholder="Tell us about your shoot..."></textarea></label>
+        <label>Project details<textarea name="message" placeholder="Tell us about your shoot..." required></textarea></label>
         <button type="submit" class="btn btn-primary">Send Enquiry</button>
       </form>
     </div>
@@ -588,6 +584,64 @@
     <span>Photography · Video · Media</span>
   </div>
 </footer>
+
+<script>
+  const menuToggle = document.getElementById('menu-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  const navAnchors = navLinks ? navLinks.querySelectorAll('a') : [];
+
+  if (menuToggle) {
+    menuToggle.setAttribute('aria-expanded', menuToggle.checked ? 'true' : 'false');
+
+    menuToggle.addEventListener('change', () => {
+      menuToggle.setAttribute('aria-expanded', menuToggle.checked ? 'true' : 'false');
+    });
+  }
+
+  navAnchors.forEach((link) => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 720 && menuToggle) {
+        menuToggle.checked = false;
+        menuToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menuToggle && menuToggle.checked) {
+      menuToggle.checked = false;
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  const contactForm = document.getElementById('contact-form');
+
+  if (contactForm) {
+    contactForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const formData = new FormData(contactForm);
+      const name = (formData.get('name') || '').toString().trim();
+      const email = (formData.get('email') || '').toString().trim();
+      const service = (formData.get('service') || '').toString().trim();
+      const date = (formData.get('date') || '').toString().trim();
+      const message = (formData.get('message') || '').toString().trim();
+
+      if (!name || !email || !message) {
+        contactForm.reportValidity();
+        return;
+      }
+
+      const subject = encodeURIComponent(`RJV Studios enquiry - ${service || 'General Project'}`);
+      const body = encodeURIComponent(
+        `Name: ${name}\nEmail: ${email}\nService: ${service}\nDate: ${date}\n\nProject details:\n${message}`
+      );
+
+      window.location.href = `mailto:info@rjvstudios.co.uk?subject=${subject}&body=${body}`;
+      contactForm.reset();
+    });
+  }
+</script>
 
 </body>
 </html>
